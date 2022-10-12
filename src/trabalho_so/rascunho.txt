@@ -1,0 +1,70 @@
+1. Uma classe para representar um sistema operacional (SistemaOperacional):
+	- Terá uma composição com a classe Escalonador: assim poderá realizar o gerenciamento dos processos;
+	- Terá uma fila de processos prontos: Processos em memória aguardando para usarem a CPU;
+	- Terá uma fila de processos bloqueados: Processos em memória aguardando E/S.
+	- Terá uma variável para indicar o processo que está executando na CPU;
+	- Terá uma variável para representar a tabela/lista de processos, que faz uma composição com a classe BlocoDeControleDeProcesso;
+
+2. Uma classe para representar o escalonador do sistema operacional (Escalonador), a mais complexa de implementar:
+	- Terá uma composição com a classe processo: assim poderá retirar ou colocar os processos na CPU;
+	- Contém uma fila de processos prontos, ORDENADOS POR PRIORIDADE;
+	- Contém uma fila de processos bloqueados, ORDENADOS POR ORDEM DE CHEGADA;
+	- Contém uma variável para indicar a quantidade de comandos/instruções que cada processo poderá executar antes de uma preempção;
+	- A classe terá os seguintes métodos:
+		- Distribuição de créditos: Cada processo, na fila de prontos, terá o seu crédito inicial igual a sua prioridade;
+		- Ordenar a fila de prontos: Ordenar a fila de processos prontos por ordem de crédito, do maior para o menor;
+		- Executar processo: 
+			- concede a CPU para um processo; 
+			- a cada comando/instrução o processo perde 1 de crédito; 
+			- quando o crédito do processo acabar será recolocado na fila de prontos (necessário reordenar a fila de prontos); 
+			- Quando TODOS os processos estiverem com ZERO de crédito, os créditos de cada processo serão redistribuídos e a fila 
+			de prontos reeordenada. Depois disso, os processos voltam a executar.
+			- Se um processo for bloqueado durante a sua execução na CPU, por uma chamada de E/S:
+				- Processo é marcado como bloqueado, seu contexto é salvo no BPC e enviado para a fila de bloqueados;
+				- Atribui-se um tempo de espera para o processo aguardar o desbloqueio: para cada ada processo que terminar de executar na CPU, o
+				tempo de espera de todos os bloqueados serão decrementados. Um processo é desbloqueado quando 2 outros processos já terminaram seu quantum. 
+				(O tempo de espera pode ser definido como 2 vezes o número de quantum de um processo).
+				- Quando o tempo de espera de um bloqueado acabar, o processo terá seu contexto restaurado e será enviado para a fila de prontos 
+				(necessários reeordenar a fila de prontos). O processo entra na fila de prontos e executa a próxima instrução guardada no PC (salva no BCP);
+				
+	- Se a fila de prontos estiver vazia e existir somente bloqueados, o tempo de espera de todos os processos bloqueados serão decrementados. Assim, uma hora
+	ou outra haverá um processo na fila de prontos para executar.
+	- Quando um processo executar a instrução SAIDA, deixará de executar na CPU, sairá da fila de prontos e da tabela de processos (perdendo também o BPC). 
+		
+	
+3. Uma classe para representar os processos que serão executados no computador (Processos).
+	-  Terá uma composição com a classe Processador: assim poderá operar em um processador e realizar as intruções da CPU;
+	- Uma variável para indicar o estado do processo : pronto, executando ou bloqueado;
+	- Uma variável para indicar a prioridade do processo: quanto maior o número, maior a prioridade;
+	- Uma variável para indicar o número de créditos do processo: inicia com o mesmo valor da prioridade;
+	- Uma variável para indicar a quantidade de comandos do processo: representa a quantidade de quanta do processo;
+	- Uma variável para representar o tempo de espera do processo: o tempo necessário para o processo ser desbloqueado da fila de bloqueados;
+	- 
+	
+4. Uma classe para representar o bloco de controle de um processo (BCP), que contém as informações gerais para que um processo possa ser retomado na CPU.
+	- Terá como campos da classe as seguintes variáveis:
+		- Processo: Contém o endereço de um processo salvo no BPC;
+		- PC: contador de programa de um processo;
+		- Estado: estado do processo (executando, pronto ou bloqueado);
+		- Prioridade: prioridade do processo;
+		- X: valor do registrador X;
+		- Y: valor do registrador Y;
+		
+
+2. Uma classe para representar um processador (Processador), que contém quatro instruções (métodos da classe):
+	- Terá um contador de programa (PC) e dois registradores (X e Y) como campos da classe.
+	- Quatro métodos que representarão as instruções que o processador pode executar: 
+		- Registrador = <valor>: atribui algum valor para os registradores X e Y;
+		- E/S: realiza uma chamada ao SO para um dispositivo de E/S do sistema;
+		- COM: a tarefa executada pelo computador;
+		- SAIDA: remove o programa em questão da memória.
+
+
+
+4. Uma classe para representar um computador, que conterá o método main.
+	- Inicializa um objeto SistemaOperacional;
+	- Inicializa um objeto Processador;
+	- Inicializa um objeto Processos;
+	- Outras operações para gerar os resultados esperados;
+	
+	
