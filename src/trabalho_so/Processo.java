@@ -13,7 +13,7 @@ package trabalho_so;
 
 import java.util.*;
 
-public class Processo {
+public class Processo implements Comparable<Processo>{
 
 	private String programa;
 	private List<String> comandos = new ArrayList(); // Guarda as instruções do programa.
@@ -85,5 +85,17 @@ public class Processo {
 		++numComandos;
 	}
 
-	// falta implementar os outros métodos...
+	@Override
+	/*
+	 * Especifica o método de comparação entre os processos, utilizado na fila de prioridades.
+	 * Processos com  maior quantidade de créditos ficam entre os primeiros da fila.
+	 */
+	public int compareTo(Processo p) {
+		
+		if (this.creditos > p.creditos) return -1;
+		else if (this.creditos < p.creditos) return 1;
+		else return 0;
+	}
+
+	// falta implementar os outros métodos...?
 }
