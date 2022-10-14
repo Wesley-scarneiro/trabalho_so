@@ -1,10 +1,11 @@
 /*
  * Representar o escalonador do sistema operacional.
-	- Contém uma composição com a classe processo: assim poderá retirar ou colocar os processos na CPU;
 	- Contém uma variável para indicar o processo que está usando a CPU;
 	- Contém uma fila de processos prontos, ORDENADOS POR PRIORIDADE;
 	- Contém uma fila de processos bloqueados, ORDENADOS POR ORDEM DE CHEGADA;
-	- Contém uma variável para indicar a quantidade de comandos/instruções que cada processo poderá executar antes de uma preempção;
+	- Contém uma variável quantum para indicar o intervalo de tempo em que um processo poderá fazer uso da CPU.
+	É defino na instanciação da classe, a partir da leitura do arquivo quantum.txt;
+	
 	- A classe possui os seguintes métodos:
 		- Distribuição de créditos: Cada processo, na fila de prontos, terá o seu crédito inicial igual a sua prioridade;
 		- Ordenar a fila de prontos: Ordenar a fila de processos prontos por ordem de crédito, do maior para o menor;
@@ -33,16 +34,18 @@ import java.util.*;
 
 public class Escalonador {
 	
-	private Processo processo = new Processo();
-	private Processo processoEmCPU = null;
+	private Processo processoEmExecucao = null;								// Processo escolhido para usar a CPU.
 	private Queue<Processo> filaDeProntos = new PriorityQueue<>();			// Necessário verificar ordenação por créditos
 	private Queue<Processo> filaDeBloqueados = new PriorityQueue<>();		// Pode manter a ordenação natural, de chegada.
-	private int quantum = 0;
+	private int quantum;
 	
 	
-	public Escalonador() {
+	/*
+	 	Um escalonador é instanciado ao receber o valor do quantum.
+	 */
+	public Escalonador(int quantum) {
 		
-		
+		this.quantum = quantum;
 	}
 	
 	/*

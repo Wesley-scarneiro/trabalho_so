@@ -24,41 +24,34 @@ public class Processador {
 	/*
 	 * Define a próxima instrução do PC.
 	 */
-	public void setpc(String comando) {
+	public void setPC(String comando) {
 		
 		this.pc = comando;
 	}
 	
-	/*
-	 * Instrução de atribuição do registrador x.
-	 */
-	public void setx(int num) {
+	public void setX(int num) {
 		
 		this.x = num;
 	}
 	
-	/*
-	 * Instrução de atribuição do registrador y.
-	 */
-	public void sety(int num) {
+	public void setY(int num) {
 		
 		this.y = num;
 	}
 	
-	
 	/* Métodos de retorno */
 	
-	public String getpc() {
+	public String getPC() {
 		
 		return this.pc;
 	}
 	
-	public int getx() {
+	public int getX() {
 		
 		return this.x;
 	}
 	
-	public int gety() {
+	public int getY() {
 		
 		return this.y;
 	}

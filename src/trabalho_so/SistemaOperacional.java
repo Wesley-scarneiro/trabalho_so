@@ -1,10 +1,12 @@
 /*
- * Representar um sistema operacional.
- * Recebe a referência de um objeto escalonador para ser instanciado.
+ * Representa um sistema operacional.
+   O sistema operacional será necessário somente para chamar o despachante, escalonador e gerenciar a tabela de processos.
+   O escalonador será instanciado quando o quantum for lido do arquivo 'quantum.txt' .
 	- Contém uma composição com a classe Escalonador: assim poderá realizar o gerenciamento dos processos;
-	- Contém uma variável para representar a tabela/lista de processos, que faz uma composição com a classe BlocoDeControleDeProcesso;
-	- Métodos para realizar a escrita e leitura de arquivos;
-	- Métodos para 
+	- Contém uma composição com a classe despachante: assim poderá salvar o BPC de cada processo;
+	- Contém uma variável para representar a tabela/lista de processos (ordenação natural por inserção)
+	- Métodos para realizar a escrita e leitura de arquivos (métodos de inicialização)
+	- Métodos para instanciar processos (ao ler os arquivos de entrada);
  */
 
 package trabalho_so;
@@ -13,24 +15,24 @@ import java.util.*;
 
 public class SistemaOperacional {
 	
-	private Escalonador escalonador = new Escalonador();
+	private Escalonador escalonador;
+	private Despachante despachante;
 	private List<BlocoDeControleDeProcesso> tabelaDeProcessos = new ArrayList();
-	private Processo processo = null;
 	
-	public SistemaOperacional() {
+	public SistemaOperacional(Processador cpu) {
 		
-		
+		this.despachante = new Despachante(cpu);
 	}
-	
 	
 	/*
-	 * Retorna o processo que está utilizando a CPU.
+	 	Inicializa o sistema operacional.
+	 	Relizan as operações necessárias para ler os arquivos de entrada e instanciar os processos.
 	 */
-	public Processo getProcesso() {
+	public void inicializar() {
 		
-		return processo;
+		
 	}
-	
+
 	/*
 	 * Realiza a leitura de um arquivo.
 	 */

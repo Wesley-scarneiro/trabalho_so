@@ -15,17 +15,35 @@ package trabalho_so;
 
 public class BlocoDeControleDeProcesso {
 	
-	private Processo processo;
-	private String programa;
+	private Processo processo;			// Edenreço do processo na memória
+	private String programa;			// Nome do programa
 	private String pc;
 	private String estado;
 	private int prioridade;
 	private int x;
 	private int y;
 	
-	public BlocoDeControleDeProcesso(Processo processo) {
+	public BlocoDeControleDeProcesso(Processo processo, String pc, int x, int y) {
 		
-		// Definir os valores do processo para as variaveis do BCP.
+		this.processo = processo;
+		this.programa = processo.getPrograma();
+		this.pc = pc;
+		this.estado = processo.getEstado();
+		this.prioridade = processo.getPrioridade();
+		this.x = x;
+		this.y = y;
 	}
-	
+
+	public String getPc() {
+		return pc;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 }
