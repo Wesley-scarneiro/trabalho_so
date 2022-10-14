@@ -35,8 +35,8 @@ import java.util.*;
 public class Escalonador {
 	
 	private Processo processoEmExecucao = null;								// Processo escolhido para usar a CPU.
-	private Queue<Processo> filaDeProntos = new PriorityQueue<>();			// Necessário verificar ordenação por créditos
-	private Queue<Processo> filaDeBloqueados = new PriorityQueue<>();		// Pode manter a ordenação natural, de chegada.
+	private Queue<Processo> filaDeProntos = new PriorityQueue<>();			// Ordenação por créditos.
+	private List<Processo> filaDeBloqueados = new LinkedList<>();			// Ordenação natural (FIFO).
 	private int quantum;
 	
 	
@@ -47,6 +47,49 @@ public class Escalonador {
 		
 		this.quantum = quantum;
 	}
+	
+	/*
+	 * Método para adicionar um processo na fila de prontos.
+	 * A inserção é por ordem de créditos.
+	 * Processos com maiores quantidade de créditos ficam entre os primeiros.
+	 * Processos com menores quantidade de créditos ficam entre os últimos.
+	 */
+	public void adicionarFilaProntos(Processo p) {
+		
+		filaDeProntos.add(p);
+	}
+	
+	/*
+	 * Método para remover um processo na fila de prontos.
+	 * Remove o primeiro da fila e retorna a sua referência.
+	 * Retorna null se não houver mais processos na fila para retirar.
+	 */
+	public Processo removerFilaProntos() {
+		
+		if (filaDeProntos.isEmpty()) return filaDeProntos.remove();
+		else return null;
+	}
+	
+	/*
+	 * Adiciona um processo na fila de bloqueados.
+	 * Segue a ordem de chegada: primeiro a entrar é o primeiro a sair (FIFO).
+	 */
+	public void adicionarFilaBloqueados(Processo p) {
+		
+		filaDeBloqueados.add(p);
+	}
+	
+	/*
+	 * Remove um processo da fila de bloqueados.
+	 * Retorna a referência do processo retirado (sempre o primeiro da fila).
+	 * Se não houver processos bloqueados, retorna null.
+	 */
+	public Processo removerFilaBloqueados() {
+		
+		if (filaDeBloqueados.isEmpty()) return filaDeBloqueados.remove(0);
+		else return null;
+	}
+	
 	
 	/*
 	 * Distribui os créditos para todos os processos da fila de prontos.
