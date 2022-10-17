@@ -84,6 +84,16 @@ public class Processo implements Comparable<Processo>{
 		comandos.add(instrucao);
 		++numComandos;
 	}
+	
+	/*
+	 * Imprime os comandos registrados de um processo.
+	 * Método para teste, para verificar se os comandos forem lidos corretamente no arquivo.
+	 */
+	public void imprimirComandos() {
+		
+		System.out.println("Nome do programa: " + this.programa + " | Número de comandos: " + this.numComandos);
+		System.out.println(comandos);
+	}
 
 	@Override
 	/*
