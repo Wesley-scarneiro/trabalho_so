@@ -17,7 +17,7 @@ public class Computador {
 
 	
 	/*
-	 	Inicializa um SO.
+	 	Inicializa o SO.
 	 */
 	public void ligar() {
 		
