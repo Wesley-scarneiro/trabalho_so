@@ -11,6 +11,8 @@
 
 package trabalho_so;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class SistemaOperacional {
@@ -27,18 +29,38 @@ public class SistemaOperacional {
 	/*
 	 	Inicializa o sistema operacional.
 	 	Relizan as operações necessárias para ler os arquivos de entrada e instanciar os processos.
+	 	****EM TESTE****
 	 */
 	public void inicializar() {
 		
-		
+		try {
+			
+			lerProcessos("teste_programa.txt");
+			
+			
+		} catch(IOException e) {
+			
+			System.out.println("Erro ao abrir o arquivo.");
+		}
 	}
 
 	/*
-	 * Realiza a leitura de um arquivo.
+	 * Realiza a leitura do arquivo de um processo.
+	 * Instância um processo e captura os dados do arquivo.
+	 * Captura primeiramente o nome do programa e depois os comandos no laço.
 	 */
-	public void lerArquivo() {
+	public void lerProcessos(String arquivo) throws IOException {
 		
+		Scanner input = new Scanner(Paths.get(arquivo));
+		Processo p = new Processo();
 		
+		p.setPrograma(input.next());
+		while (input.hasNext()) {
+			
+			p.adicionarComando(input.next());
+		}
+		
+		p.imprimirComandos(); // ***para teste, verificando se os comandos forem lidos corretamente.***
 	}
 	
 	/*
