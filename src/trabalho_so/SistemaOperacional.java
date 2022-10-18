@@ -20,6 +20,9 @@ public class SistemaOperacional {
 	private Escalonador escalonador;
 	private Despachante despachante;
 	private List<BlocoDeControleDeProcesso> tabelaDeProcessos = new ArrayList();
+	private String [] arqProcessos = {"01.txt", "02.txt", "03.txt", "04.txt", "05.txt", "06.txt", "07.txt", "08.txt", "09.txt", "10.txt"};
+	private String arqPrioridades = "prioridades.txt";
+	private String arqQuantum = "quantum.txt";
 	
 	public SistemaOperacional(Processador cpu) {
 		
@@ -27,15 +30,37 @@ public class SistemaOperacional {
 	}
 	
 	/*
-	 	Inicializa o sistema operacional.
-	 	Relizan as operações necessárias para ler os arquivos de entrada e instanciar os processos.
-	 	****EM TESTE****
+	 * Testa o método inicializar. 
+	 * EXCLUIR AO FINALIZAR O TRABALHO.
 	 */
-	public void inicializar() {
+	public void testarInicializar() {
 		
 		try {
 			
-			lerProcessos("teste_programa.txt");
+			escalonador = new Escalonador(carregarQuantum(arqQuantum));
+			Scanner input = new Scanner(Paths.get(arqPrioridades));
+			
+			System.out.println("---> Teste de entrada dos processos <---\n");
+			
+			for (int i = 0; i < arqProcessos.length; i++) {
+				
+				Processo p = new Processo();
+				carregarProcesso(p, arqProcessos[i], input.nextInt());
+				escalonador.adicionarFilaProntos(p);
+				
+				p.imprimirTestes();								// Para teste.
+			}
+				
+			input.close();										// Fecha o arquivo de prioridades.
+			escalonador.imprimirTestes();						// Para teste.
+			System.out.println("\n---> Teste de saída da fila de prontos <---\n");
+			Processo p = escalonador.removerFilaProntos();
+			while (p != null) {
+				
+				System.out.println("Saiu: " + p);
+				escalonador.imprimirProntos();
+				p = escalonador.removerFilaProntos();
+			}
 			
 			
 		} catch(IOException e) {
@@ -43,24 +68,68 @@ public class SistemaOperacional {
 			System.out.println("Erro ao abrir o arquivo.");
 		}
 	}
+	
+	/*
+	 	Inicializa o sistema operacional.
+	 	Instancia um escalonador após a leitura do quantum e reliza as operações necessárias 
+	 	instanciando os processos e lendo os seus arquivos.
+	 	Após cada processo ter os seus dados carregados (nome, instruções e prioridade), são 
+	 	adicionados na fila de prontos.
+	 	
+	 	.... ouras operações para implementar ... 
+	 */
+	public void inicializar() {
+		
+		try {
+			
+			escalonador = new Escalonador(carregarQuantum(arqQuantum));
+			Scanner input = new Scanner(Paths.get(arqPrioridades));
+			
+			for (int i = 0; i < arqProcessos.length; i++) {
+				
+				Processo p = new Processo();
+				carregarProcesso(p, arqProcessos[i], input.nextInt());
+				escalonador.adicionarFilaProntos(p);
+			}
+				
+			input.close();										// Fecha o arquivo de prioridades.
+			
+		} catch(IOException e) {
+			
+			System.out.println("Erro ao abrir o arquivo.");
+		}
+	}
+	
+	
 
 	/*
-	 * Realiza a leitura do arquivo de um processo.
-	 * Instância um processo e captura os dados do arquivo.
-	 * Captura primeiramente o nome do programa e depois os comandos no laço.
+	 * Realiza a leitura do arquivo de quantum do sistema.
+	 * Retorna o valor de quantum lido.
 	 */
-	public void lerProcessos(String arquivo) throws IOException {
+	private int carregarQuantum(String arquivo) throws IOException {
 		
 		Scanner input = new Scanner(Paths.get(arquivo));
-		Processo p = new Processo();
+		return input.nextInt();
+	}
+	
+	/*
+	 * Realiza a leitura do arquivo de dados de um processo.
+	 * Captura primeiramente o nome do programa e depois todos os comandos/instruções.
+	 */
+	private void carregarProcesso(Processo p, String arqProcesso, int prioridade) throws IOException {
 		
+		Scanner input = new Scanner(Paths.get(arqProcesso));
 		p.setPrograma(input.next());
+		p.setPrioridade(prioridade);
+		p.setCreditos(prioridade);
+		
 		while (input.hasNext()) {
 			
 			p.adicionarComando(input.next());
 		}
 		
-		p.imprimirComandos(); // ***para teste, verificando se os comandos forem lidos corretamente.***
+		input.close();							// Fecha o arquivo.
+		p.setEstado("pronto");
 	}
 	
 	/*
