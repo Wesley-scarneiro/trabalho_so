@@ -57,6 +57,7 @@ public class Escalonador {
 	public void adicionarFilaProntos(Processo p) {
 		
 		filaDeProntos.add(p);
+		
 	}
 	
 	/*
@@ -66,8 +67,7 @@ public class Escalonador {
 	 */
 	public Processo removerFilaProntos() {
 		
-		if (filaDeProntos.isEmpty()) return filaDeProntos.remove();
-		else return null;
+		return filaDeProntos.poll();
 	}
 	
 	/*
@@ -91,15 +91,6 @@ public class Escalonador {
 	}
 	
 	
-	/*
-	 * Distribui os créditos para todos os processos da fila de prontos.
-	 * Cada processo terá o seu crédito inicial igual a sua prioridade;
-	 * Já adiciona os processos em na fila de prontos.
-	 */
-	public void distruirCreditos() {
-		
-		
-	}
 	
 	/*
 	 * Realiza o gerenciamento dos processos.
@@ -108,5 +99,21 @@ public class Escalonador {
 	public void executarProcesso() {
 		
 		
+	}
+	
+	/*
+	 * Imprime a lista de processos prontos.
+	 * Para teste.
+	 */
+	public void imprimirTestes() {
+		
+		System.out.println("Quantum: " + this.quantum);
+		System.out.println("Fila de prontos: " + this.filaDeProntos);
+		System.out.println("Fila de bloqueados: " + this.filaDeBloqueados);
+	}
+	
+	public void imprimirProntos() {
+		
+		System.out.println("Fila de prontos: " + this.filaDeProntos);
 	}
 }
