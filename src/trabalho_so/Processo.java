@@ -15,7 +15,7 @@ import java.util.*;
 
 public class Processo implements Comparable<Processo>{
 
-	private String programa;
+	private String nomePrograma;
 	private List<String> comandos = new ArrayList(); // Guarda as instruções do programa.
 	private String estado;
 	private int prioridade;
@@ -28,11 +28,11 @@ public class Processo implements Comparable<Processo>{
 	}
 
 	public String getPrograma() {
-		return programa;
+		return nomePrograma;
 	}
 
 	public void setPrograma(String programa) {
-		this.programa = programa;
+		this.nomePrograma = programa;
 	}
 
 	public String getEstado() {
@@ -89,10 +89,16 @@ public class Processo implements Comparable<Processo>{
 	 * Imprime os comandos registrados de um processo.
 	 * Método para teste, para verificar se os comandos forem lidos corretamente no arquivo.
 	 */
-	public void imprimirComandos() {
+	public void imprimirTestes() {
 		
-		System.out.println("Nome do programa: " + this.programa + " | Número de comandos: " + this.numComandos);
+		System.out.println("Nome do programa: " + this.nomePrograma + " | Número de comandos: " + this.numComandos 
+							+ " | Prioridade: " + this.prioridade + " | Créditos: " + this.creditos);
 		System.out.println(comandos);
+	}
+	
+	public String toString() {
+		
+		return this.nomePrograma;
 	}
 
 	@Override
