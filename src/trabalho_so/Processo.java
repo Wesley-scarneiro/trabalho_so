@@ -115,8 +115,8 @@ public class Processo implements Comparable<Processo>{
 	public void imprimirTestes() {
 		
 		System.out.println("Nome do programa: " + this.nomePrograma + " | Número de comandos: " + this.numComandos 
-							+ " | Prioridade: " + this.prioridade + " | Créditos: " + this.creditos);
-		System.out.println(comandos);
+							+ " | Prioridade: " + this.prioridade + " | Créditos: " + this.creditos + " | PC: " + this.pc);
+		System.out.println("\t"+ comandos);
 	}
 	
 	public String toString() {

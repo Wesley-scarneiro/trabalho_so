@@ -46,12 +46,14 @@ public class SistemaOperacional {
 				
 				Processo p = new Processo();
 				carregarProcesso(p, arqProcessos[i], input.nextInt());
+				criarBcp(p);
 				escalonador.adicionarFilaProntos(p);
 				
 				p.imprimirTestes();								// Para teste.
 			}
 				
 			input.close();										// Fecha o arquivo de prioridades.
+			System.out.println("Tabela de processos = " + tabelaDeProcessos);
 			escalonador.imprimirTestes();						// Para teste.
 			System.out.println("\n---> Teste de saída da fila de prontos <---\n");
 			Processo p = escalonador.removerFilaProntos();
@@ -131,7 +133,6 @@ public class SistemaOperacional {
 		p.setPrograma(input.next());
 		p.setPrioridade(prioridade);
 		p.setCreditos(prioridade);
-		p.setPc(p.getComando());
 		
 		while (input.hasNext()) {
 			
@@ -139,6 +140,7 @@ public class SistemaOperacional {
 		}
 		
 		input.close();							// Fecha o arquivo.
+		p.setPc(p.getComando());
 		p.setEstado("pronto");
 	}
 	

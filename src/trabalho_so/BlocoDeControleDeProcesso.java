@@ -52,5 +52,10 @@ public class BlocoDeControleDeProcesso {
 	public int getY() {
 		return y;
 	}
+	
+	public String toString() {
+		
+		return this.programa;
+	}
 
 }
