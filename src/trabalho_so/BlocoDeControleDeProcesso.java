@@ -17,24 +17,31 @@ public class BlocoDeControleDeProcesso {
 	
 	private Processo processo;			// Edenreço do processo na memória
 	private String programa;			// Nome do programa
+	private String codigo;				// Lista de comandos.
 	private String pc;
 	private String estado;
 	private int prioridade;
 	private int x;
 	private int y;
 	
-	public BlocoDeControleDeProcesso(Processo processo, String pc, int x, int y) {
+	public BlocoDeControleDeProcesso(Processo processo) {
 		
 		this.processo = processo;
 		this.programa = processo.getPrograma();
-		this.pc = pc;
+		this.codigo = processo.getComando();
+		this.pc = processo.getPc();
 		this.estado = processo.getEstado();
 		this.prioridade = processo.getPrioridade();
+	}
+	
+	
+	public void setBcp(Processo processo, String pc, int x, int y) {
+		
+		this.pc = pc;
 		this.x = x;
 		this.y = y;
 	}
-
-	public String getPc() {
+		public String getPc() {
 		return pc;
 	}
 

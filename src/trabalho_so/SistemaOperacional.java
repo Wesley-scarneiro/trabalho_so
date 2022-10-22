@@ -73,14 +73,17 @@ public class SistemaOperacional {
 	 	Inicializa o sistema operacional.
 	 	Instancia um escalonador após a leitura do quantum e reliza as operações necessárias 
 	 	instanciando os processos e lendo os seus arquivos.
-	 	Após cada processo ter os seus dados carregados (nome, instruções e prioridade), são 
-	 	adicionados na fila de prontos.
+	 	Após cada processo ter os seus dados carregados (instruções e prioridade), terá o
+	 	BCP criado, adicionado na tabela de processos do SO e depois adicionado na fila de processos prontos.
+	 	
 	 	
 	 	.... ouras operações para implementar ... 
 	 */
 	public void inicializar() {
 		
 		try {
+			
+			/* Etapa de inicialização do SO */
 			
 			escalonador = new Escalonador(carregarQuantum(arqQuantum));
 			Scanner input = new Scanner(Paths.get(arqPrioridades));
@@ -89,10 +92,16 @@ public class SistemaOperacional {
 				
 				Processo p = new Processo();
 				carregarProcesso(p, arqProcessos[i], input.nextInt());
+				criarBcp(p);
 				escalonador.adicionarFilaProntos(p);
 			}
 				
 			input.close();										// Fecha o arquivo de prioridades.
+			
+			
+			/* Etapa em que o escalonador gerencia a execução dos processos */
+			
+			
 			
 		} catch(IOException e) {
 			
@@ -122,6 +131,7 @@ public class SistemaOperacional {
 		p.setPrograma(input.next());
 		p.setPrioridade(prioridade);
 		p.setCreditos(prioridade);
+		p.setPc(p.getComando());
 		
 		while (input.hasNext()) {
 			
@@ -130,6 +140,15 @@ public class SistemaOperacional {
 		
 		input.close();							// Fecha o arquivo.
 		p.setEstado("pronto");
+	}
+	
+	/*
+	 * Cria o BCP de um processo e adiciona na tabela de processos do SO.
+	 */
+	public void criarBcp(Processo p) {
+		
+		BlocoDeControleDeProcesso bcp = new BlocoDeControleDeProcesso(p);
+		tabelaDeProcessos.add(bcp);
 	}
 	
 	/*

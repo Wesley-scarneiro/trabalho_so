@@ -18,6 +18,7 @@ public class Processo implements Comparable<Processo>{
 	private String nomePrograma;
 	private List<String> comandos = new ArrayList(); // Guarda as instruções do programa.
 	private String estado;
+	private String pc;
 	private int prioridade;
 	private int creditos;
 	private int numComandos = 0;
@@ -25,6 +26,19 @@ public class Processo implements Comparable<Processo>{
 
 	public Processo() {
 
+	}
+	
+	public List getComandos() {
+		
+		return comandos;
+	}
+	
+	public String getPc() {
+		return pc;
+	}
+
+	public void setPc(String pc) {
+		this.pc = pc;
 	}
 
 	public String getPrograma() {
@@ -83,6 +97,15 @@ public class Processo implements Comparable<Processo>{
 
 		comandos.add(instrucao);
 		++numComandos;
+	}
+	
+	/*
+	 * Retorna o primeiro comando da lista de comandos do processo.
+	 */
+	public String getComando() {
+		
+		--numComandos;
+		return comandos.remove(0);
 	}
 	
 	/*

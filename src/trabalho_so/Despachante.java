@@ -19,10 +19,9 @@ public class Despachante {
 	 * Salva o contexto de um processo no seu BPC (bloco de controle de processo).
 	 * Retorna o endereço do BPC para ser guardado na tabela de processos do SO.
 	 */
-	public BlocoDeControleDeProcesso salvarContexto(Processo processo) {
+	public void salvarContexto(Processo processo, BlocoDeControleDeProcesso bcp) {
 		
-		BlocoDeControleDeProcesso bcp = new BlocoDeControleDeProcesso(processo, cpu.getPC(), cpu.getX(), cpu.getY());
-		return bcp;
+		bcp.setBcp(processo, cpu.getPC(), cpu.getX(), cpu.getY());
 	}
 	
 	/*
