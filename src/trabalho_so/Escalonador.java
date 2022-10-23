@@ -38,6 +38,7 @@ public class Escalonador {
 	private Queue<Processo> filaDeProntos = new PriorityQueue<>();			// Ordenação por créditos.
 	private List<Processo> filaDeBloqueados = new LinkedList<>();			// Ordenação natural (FIFO).
 	private int quantum;
+	private int tempoEspera = 2;
 	
 	
 	/*
@@ -96,9 +97,120 @@ public class Escalonador {
 	 * Realiza o gerenciamento dos processos.
 	 * Escolhe um processo e o executa na CPU.
 	 */
-	public void executarProcesso() {
+	public void inicializar(Despachante d, List<BlocoDeControleDeProcesso> tp) {
 		
+		int contador;				// Controla o quantum de cada processo.
+		int espera;					// Conta quantos quantums ocorreram.
+		Processo p;
+		boolean continuar;
+		BlocoDeControleDeProcesso bcp;
 		
+		while (filaDeProntos.size() != 0 || filaDeBloqueados.size() != 0) {
+			
+			 /* Quando só há processos na fila de bloqueados. */
+			if (filaDeProntos.size() == 0) {
+				
+				while (filaDeBloqueados.size() != 0) {
+					
+					decrementarBloqueados();
+				}
+			}
+			
+			contador = this.quantum;
+			p = removerFilaProntos();
+			p.setEstado("executando");
+			if (p.getCreditos() > 0) p.decrementarCreditos();
+			continuar = true;
+			espera = 0;
+			bcp = buscarBcp(p, tp);
+			
+			/* Quando só há processos com zero créditos na fila de prontos, redistribui os créditos. */
+			if (p.getCreditos() == 0 && filaDeBloqueados.size() == 0) {
+				
+				//redistruir os créditos
+			}
+			
+
+			/* Executa o quantum de um processo. */
+			while (contador != 0) {
+				
+				int retorno = d.executarProcesso(bcp);
+				--contador;
+						
+				if (retorno == 1) {
+					
+					p.setEstado("bloqueado");
+					p.setTempoEspera(tempoEspera);
+					d.salvarContexto(bcp);
+					adicionarFilaBloqueados(p);
+					continuar = false;
+					break;
+				}
+				else if (retorno == -1){
+							
+					removerBcp(p, tp);
+					continuar = false;
+					break;	
+				}
+				else {
+					d.continuarContexto(bcp);
+					continue;
+				}
+			}
+			
+			++espera;			// Conta quantos quantums já ocorreram.
+			
+			/* Se for o caso, adiciona o processo novamente na fila de prontos. Quando o quantum dele acaba. */
+			if (continuar == true) {
+				
+				d.salvarContexto(bcp);
+				adicionarFilaProntos(p);
+			}
+			
+			/* Decrementa o tempo de espera de todos os processos bloqueados a cada determinada quantidade de quantums. */
+			if (espera == tempoEspera && filaDeBloqueados.size() != 0) {
+				
+				decrementarBloqueados();
+			}
+		}
+	}
+	
+	/*
+	 * Remove um processo da tabela de processos do SO.
+	 */
+	private void removerBcp(Processo p, List<BlocoDeControleDeProcesso> tp) {
+		
+		for (int i = 0; i < tp.size(); i++) {
+		
+			if (tp.get(i).getProcesso() == p) tp.remove(i);
+		}	
+	}
+	
+	/*
+	 * Busca o BCP de um processo na tabela de processos do SO.
+	 */
+	private BlocoDeControleDeProcesso buscarBcp(Processo p, List<BlocoDeControleDeProcesso> tp) {
+		
+		for (BlocoDeControleDeProcesso i : tp) {
+			
+			if (i.getProcesso() == p) return i;
+		}
+		
+		return null;
+	}
+	
+	/*
+	 * Decrementa o tempo de espera de todos os processos na fila de bloqueados.
+	 * Só decrementa o tempo se for maior que zero.
+	 * Quando um processo possui zero de tempo, é adicionado na fila de prontos.
+	 */
+	private void decrementarBloqueados() {
+		
+		for (int i = 0; i < filaDeBloqueados.size(); i++) {
+			
+			if (filaDeBloqueados.get(i).getTempoEspera() > 0) filaDeBloqueados.get(i).decrementarTempoEspera();
+			else adicionarFilaProntos(filaDeBloqueados.remove(i));
+		}
 	}
 	
 	/*
@@ -108,7 +220,7 @@ public class Escalonador {
 	public void imprimirTestes() {
 		
 		System.out.println("Quantum: " + this.quantum);
-		System.out.println("Fila de prontos: " + this.filaDeProntos);
+		System.out.println("Fila de prontos: " + this.filaDeProntos + " | tamanho: " + filaDeProntos.size());
 		System.out.println("Fila de bloqueados: " + this.filaDeBloqueados);
 	}
 	

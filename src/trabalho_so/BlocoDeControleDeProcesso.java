@@ -13,37 +13,53 @@
 
 package trabalho_so;
 
+import java.util.List;
+
 public class BlocoDeControleDeProcesso {
 	
 	private Processo processo;			// Edenreço do processo na memória
 	private String programa;			// Nome do programa
-	private String codigo;				// Lista de comandos.
+	private List<String> comandos;		// Lista de comandos.
 	private String pc;
 	private String estado;
 	private int prioridade;
-	private int x;
-	private int y;
+	private int x = 0;
+	private int y = 0;
 	
 	public BlocoDeControleDeProcesso(Processo processo) {
 		
 		this.processo = processo;
 		this.programa = processo.getPrograma();
-		this.codigo = processo.getComando();
-		this.pc = processo.getPc();
+		this.comandos = processo.getListaComandos();
 		this.estado = processo.getEstado();
+		this.pc = processo.getProxComando();
 		this.prioridade = processo.getPrioridade();
 	}
 	
 	
-	public void setBcp(Processo processo, String pc, int x, int y) {
+	public void setBcp(String pc, int x, int y) {
 		
 		this.pc = pc;
 		this.x = x;
 		this.y = y;
+		this.estado = this.processo.getEstado();
+		this.comandos = this.processo.getListaComandos();
 	}
 		public String getPc() {
 		return pc;
 	}
+		
+	
+
+	public void setComandos(List<String> comandos) {
+		this.comandos = comandos;
+	}
+
+
+	public void setPc(String pc) {
+		this.pc = pc;
+	}
+
 
 	public int getX() {
 		return x;
@@ -51,6 +67,10 @@ public class BlocoDeControleDeProcesso {
 
 	public int getY() {
 		return y;
+	}
+	
+	public Processo getProcesso() {
+		return this.processo;
 	}
 	
 	public String toString() {

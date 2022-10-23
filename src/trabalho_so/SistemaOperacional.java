@@ -102,7 +102,7 @@ public class SistemaOperacional {
 			
 			
 			/* Etapa em que o escalonador gerencia a execução dos processos */
-			
+			escalonador.inicializar(despachante, tabelaDeProcessos);
 			
 			
 		} catch(IOException e) {
@@ -130,7 +130,7 @@ public class SistemaOperacional {
 	private void carregarProcesso(Processo p, String arqProcesso, int prioridade) throws IOException {
 		
 		Scanner input = new Scanner(Paths.get(arqProcesso));
-		p.setPrograma(input.next());
+		p.setNomePrograma(input.next());
 		p.setPrioridade(prioridade);
 		p.setCreditos(prioridade);
 		
@@ -140,7 +140,6 @@ public class SistemaOperacional {
 		}
 		
 		input.close();							// Fecha o arquivo.
-		p.setPc(p.getComando());
 		p.setEstado("pronto");
 	}
 	

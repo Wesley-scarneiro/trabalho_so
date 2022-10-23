@@ -18,35 +18,16 @@ public class Processo implements Comparable<Processo>{
 	private String nomePrograma;
 	private List<String> comandos = new ArrayList(); // Guarda as instruções do programa.
 	private String estado;
-	private String pc;
 	private int prioridade;
 	private int creditos;
-	private int numComandos = 0;
 	private int tempoEspera;
 
 	public Processo() {
 
 	}
-	
-	public List getComandos() {
-		
-		return comandos;
-	}
-	
-	public String getPc() {
-		return pc;
-	}
-
-	public void setPc(String pc) {
-		this.pc = pc;
-	}
 
 	public String getPrograma() {
 		return nomePrograma;
-	}
-
-	public void setPrograma(String programa) {
-		this.nomePrograma = programa;
 	}
 
 	public String getEstado() {
@@ -56,11 +37,19 @@ public class Processo implements Comparable<Processo>{
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+	
+	public void setTempoEspera(int tempo) {
+		this.tempoEspera = tempo;
+	}
 
 	public int getPrioridade() {
 		return prioridade;
 	}
 
+	public void decrementarCreditos() {
+		--this.creditos;
+	}
+	
 	public void setPrioridade(int prioridade) {
 		this.prioridade = prioridade;
 	}
@@ -73,20 +62,17 @@ public class Processo implements Comparable<Processo>{
 		this.creditos = creditos;
 	}
 
-	public int getNumComandos() {
-		return numComandos;
-	}
-
-	public void setNumComandos(int numComandos) {
-		this.numComandos = numComandos;
-	}
-
 	public int getTempoEspera() {
 		return tempoEspera;
 	}
 
-	public void setTempoEspera(int tempoEspera) {
-		this.tempoEspera = tempoEspera;
+	public void decrementarTempoEspera() {
+		--this.tempoEspera;
+	}
+	
+	public void setNomePrograma(String nome) {
+		
+		this.nomePrograma = nome;
 	}
 
 	/*
@@ -96,16 +82,22 @@ public class Processo implements Comparable<Processo>{
 	public void adicionarComando(String instrucao) {
 
 		comandos.add(instrucao);
-		++numComandos;
 	}
 	
 	/*
 	 * Retorna o primeiro comando da lista de comandos do processo.
 	 */
-	public String getComando() {
+	public String getProxComando() {
 		
-		--numComandos;
 		return comandos.remove(0);
+	}
+	
+	/*
+	 * Retorna a referência da lista de comandos do processo.
+	 */
+	public List<String> getListaComandos() {
+		
+		return this.comandos;
 	}
 	
 	/*
@@ -114,8 +106,8 @@ public class Processo implements Comparable<Processo>{
 	 */
 	public void imprimirTestes() {
 		
-		System.out.println("Nome do programa: " + this.nomePrograma + " | Número de comandos: " + this.numComandos 
-							+ " | Prioridade: " + this.prioridade + " | Créditos: " + this.creditos + " | PC: " + this.pc);
+		System.out.println("Nome do programa: " + this.nomePrograma + " | Número de comandos: "
+							+ " | Prioridade: " + this.prioridade + " | Créditos: " + this.creditos);
 		System.out.println("\t"+ comandos);
 	}
 	
@@ -135,6 +127,8 @@ public class Processo implements Comparable<Processo>{
 		else if (this.creditos < p.creditos) return 1;
 		else return 0;
 	}
+
+
 
 	// falta implementar os outros métodos...?
 }

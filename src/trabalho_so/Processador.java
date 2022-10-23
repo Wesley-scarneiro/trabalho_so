@@ -22,6 +22,40 @@ public class Processador {
 	}
 	
 	/*
+	 * Interpreta cada instrução/comando de um programa guardado no PC do processador.
+	 * Tipos de retornos:
+	 * 	0  : Comando de atribuição de registradores ou COM;
+	 *  1  : Comando de E/S;
+	 *  -1 : Comando de SAIDA;
+	 *  
+	 *  Os retornos são interpretados pelo escalonador.
+	 */
+	public int executar() {
+		
+		if (pc.substring(0,1) == "X") {
+			
+			this.x = Integer.parseInt(pc.substring(2));
+			return 0;
+		}
+		else if (pc.substring(0,1) == "Y") {
+			
+			this.y = Integer.parseInt(pc.substring(2));
+			return 0; 
+		}
+		else if (pc.compareTo("COM") == 0) {
+			return 0;
+		}
+		else if (pc.compareTo("E/S") == 0) {
+			
+			return 1;
+		}
+		else {
+			
+			return -1;
+		}
+	}
+	
+	/*
 	 * Define a próxima instrução do PC.
 	 */
 	public void setPC(String comando) {
