@@ -18,7 +18,7 @@ import java.util.List;
 public class BlocoDeControleDeProcesso {
 	
 	private Processo processo;			// Edenreço do processo na memória
-	private String programa;			// Nome do programa
+	private String nomePrograma;			// Nome do programa
 	private List<String> comandos;		// Lista de comandos.
 	private String pc;
 	private String estado;
@@ -29,10 +29,10 @@ public class BlocoDeControleDeProcesso {
 	public BlocoDeControleDeProcesso(Processo processo) {
 		
 		this.processo = processo;
-		this.programa = processo.getPrograma();
-		this.comandos = processo.getListaComandos();
+		this.nomePrograma = processo.getNomePrograma();
 		this.estado = processo.getEstado();
 		this.pc = processo.getProxComando();
+		this.comandos = processo.getListaComandos();
 		this.prioridade = processo.getPrioridade();
 	}
 	
@@ -48,6 +48,14 @@ public class BlocoDeControleDeProcesso {
 		public String getPc() {
 		return pc;
 	}
+	
+	/*
+	 * Para teste.
+	 */
+	public void imprimirBcp() {
+		
+		System.out.println("DADOS DO BCP\n" + "Pc: " + pc + "\nX = " + x + " e Y = " + y);
+	}
 		
 	
 
@@ -60,6 +68,9 @@ public class BlocoDeControleDeProcesso {
 		this.pc = pc;
 	}
 
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 
 	public int getX() {
 		return x;
@@ -75,7 +86,7 @@ public class BlocoDeControleDeProcesso {
 	
 	public String toString() {
 		
-		return this.programa;
+		return this.nomePrograma;
 	}
 
 }

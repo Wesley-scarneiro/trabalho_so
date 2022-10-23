@@ -92,17 +92,129 @@ public class Escalonador {
 	}
 	
 	
+	/*
+	 * TESTE DO MÉTODO INICIALIZAR DO ESCALONADOR.
+	 */
+	public void testarInicializar(Despachante d, List<BlocoDeControleDeProcesso> tp) {
+		
+		int contador;						// Controla o quantum de cada processo.
+		int espera = 0;							// Conta quantos quantums ocorreram.
+		int retorno;						// Resultado da execução de uma instrução do programa.
+		Processo p;
+		boolean continuar;					// Controla quando um processo poderá voltar para fila de prontos.
+		BlocoDeControleDeProcesso bcp;
+		
+		System.out.println("\n---> Teste de inicialização do escalonador <---\n");
+		while (filaDeProntos.size() != 0 || filaDeBloqueados.size() != 0) {
+			
+			System.out.println("\nTAMANHO DAS FILAS" + "\n\tProntos: " + filaDeProntos.size() + "\n\tBloqueados: " + filaDeBloqueados.size());
+			System.out.println("ESTADO DAS FILAS" + "\n\tProntos: " + filaDeProntos + "\n\tBloqueados: " + filaDeBloqueados + "\n");
+			
+			 /* Quando só há processos na fila de bloqueados. */
+			if (filaDeProntos.size() == 0) {
+				
+				System.out.println("* SO HÁ PROCESSOS BLOQUEADOS, TEMPO DE ESPERA DE TODOS DECREMENTADOS * ");
+				while (filaDeBloqueados.size() != 0) {
+					
+					decrementarBloqueados();
+				}
+			}
+			
+			contador = this.quantum;
+			p = removerFilaProntos();
+			p.setEstado("executando");
+			if (p.getCreditos() > 0) p.decrementarCreditos();
+			continuar = true;
+			bcp = buscarBcp(p, tp);
+			System.out.println("Contador : " + contador + "\nProcesso: " + p.getNomePrograma() + "\nCréditos: " + p.getCreditos() + "\nEstado: " + p.getEstado() + "\n");
+			
+			/* Quando só existe processos com zero créditos e estão somente na fila de prontos, redistribui os créditos. */
+			if (p.getCreditos() == 0 && filaDeBloqueados.size() == 0) {
+				
+				System.out.println("* TODOS OS PROCESSOS COM ZERO DE CRÉDITOS, CRÉDITOS REDISTRIBUÍDOS *");
+				redistribuirCreditos();
+			}
+			
+			/* Executa o quantum de um processo. */
+			System.out.println("* QUANTUM DO PROCESSO: " + p.getNomePrograma() + " *");
+			while (contador != 0) {
+				System.out.println("* Processo : " + p.getNomePrograma() + " continua usando CPU *");
+				bcp.imprimirBcp();
+				System.out.println("LISTA DE COMANDOS: " + p.getListaComandos());
+				
+				retorno = d.executarProcesso(bcp);
+				--contador;
+				
+				System.out.println("\tInstrução executada: " + bcp.getPc() + "\n\tRetorno CPU: " + retorno);
+				System.out.println("\tUso restante de CPU = " + contador);
+
+				if (retorno == 1) {
+					System.out.println("* Processo : " + p.getNomePrograma() + " bloqueado *");
+					p.setEstado("bloqueado");
+					p.setTempoEspera(tempoEspera);
+					d.salvarContexto(bcp);
+					adicionarFilaBloqueados(p);
+					continuar = false;
+					break;
+				}
+				else if (retorno == -1){
+					
+					System.out.println("* Processo : " + p.getNomePrograma() + " finalizado *");
+					removerBcp(p, tp);
+					continuar = false;
+					break;	
+				}
+				else {
+					d.continuarContexto(bcp);
+					continue;
+				}
+			}
+			
+			++espera;			// Conta quantos quantums já ocorreram.
+			System.out.println("Espera = " + espera);
+			
+			/* Decrementa o tempo de espera de todos os processos bloqueados a cada determinada quantidade de quantums. */
+			if (espera == tempoEspera && filaDeBloqueados.size() != 0) {
+				
+				decrementarBloqueados();
+				espera = 0;
+			}
+			
+			/* Se for o caso, adiciona o processo novamente na fila de prontos. Quando o quantum dele acaba. */
+			if (continuar == true) {
+				
+				System.out.println("* Processo : " + p.getNomePrograma() + " retorna para fila de prontos *");
+				p.setEstado("pronto");
+				bcp.setEstado("pronto");				
+				bcp.imprimirBcp();
+				adicionarFilaProntos(p);
+			}
+		}
+	}
+	
+	
 	
 	/*
 	 * Realiza o gerenciamento dos processos.
-	 * Escolhe um processo e o executa na CPU.
+	 * O escalonador inicia o gerenciamento dos processos, somente quando a fila de prontos ou 
+	 * a fila de bloqueados não estiverem vazias. Gerenciará os processos quando uma dessas
+	 * filas estiverem com um ou mais processos. 
+	 * 
+	 * Situações adversas para o gerenciamento das filas:
+	 *	- 	Quando há somente processos na fila de bloqueados: o tempo de espera de todos os processos
+	 *		na fila de bloqueados serão decrementados, até que a fila fique vazia. 
+	 *	-	Quando só existem processos na fila de prontos e TODOS estão com zero de créditos, então
+	 *		o crédito de todos os processos serão redistribuídos (restaurados ao original).
+	 *	-	Quando houver processos na fila de bloqueados, a cada determinada quantidade de quantum
+	 *		os créditos de todos os processos bloqueados precisarão ser decrementados. 
 	 */
 	public void inicializar(Despachante d, List<BlocoDeControleDeProcesso> tp) {
 		
-		int contador;				// Controla o quantum de cada processo.
-		int espera;					// Conta quantos quantums ocorreram.
+		int contador;						// Controla o quantum de cada processo.
+		int espera = 0;							// Conta quantos quantums ocorreram.
+		int retorno;						// Resultado da execução de uma instrução do programa.
 		Processo p;
-		boolean continuar;
+		boolean continuar;					// Controla quando um processo poderá voltar para fila de prontos.
 		BlocoDeControleDeProcesso bcp;
 		
 		while (filaDeProntos.size() != 0 || filaDeBloqueados.size() != 0) {
@@ -121,20 +233,18 @@ public class Escalonador {
 			p.setEstado("executando");
 			if (p.getCreditos() > 0) p.decrementarCreditos();
 			continuar = true;
-			espera = 0;
 			bcp = buscarBcp(p, tp);
 			
-			/* Quando só há processos com zero créditos na fila de prontos, redistribui os créditos. */
+			/* Quando só existe processos com zero créditos e estão somente na fila de prontos, redistribui os créditos. */
 			if (p.getCreditos() == 0 && filaDeBloqueados.size() == 0) {
 				
-				//redistruir os créditos
+				redistribuirCreditos();
 			}
 			
-
 			/* Executa o quantum de um processo. */
 			while (contador != 0) {
 				
-				int retorno = d.executarProcesso(bcp);
+				retorno = d.executarProcesso(bcp);
 				--contador;
 						
 				if (retorno == 1) {
@@ -163,14 +273,16 @@ public class Escalonador {
 			/* Se for o caso, adiciona o processo novamente na fila de prontos. Quando o quantum dele acaba. */
 			if (continuar == true) {
 				
-				d.salvarContexto(bcp);
+				p.setEstado("pronto");
+				bcp.setEstado("pronto");
 				adicionarFilaProntos(p);
 			}
 			
 			/* Decrementa o tempo de espera de todos os processos bloqueados a cada determinada quantidade de quantums. */
-			if (espera == tempoEspera && filaDeBloqueados.size() != 0) {
+			if (espera == tempoEspera) {
 				
-				decrementarBloqueados();
+				if ((filaDeBloqueados.contains(p) == false && filaDeBloqueados.size() != 0)) decrementarBloqueados();
+				else espera = 0;
 			}
 		}
 	}
@@ -212,6 +324,20 @@ public class Escalonador {
 			else adicionarFilaProntos(filaDeBloqueados.remove(i));
 		}
 	}
+	
+	/*
+	 * Registribui os créditos de todos os processos da fila de prontos.
+	 * Método chamado quando só existem processos na fila de prontos e
+	 * todos eles estão com zero de créditos.
+	 */
+	private void redistribuirCreditos() {
+		
+		for (Processo i : filaDeProntos) {
+			
+			i.setCreditos(i.getPrioridade());
+		}
+	}
+	
 	
 	/*
 	 * Imprime a lista de processos prontos.

@@ -19,10 +19,11 @@ public class Despachante {
 	 * Salva o contexto de um processo no seu BPC (bloco de controle de processo).
 	 * Retorna o endereço do BPC para ser guardado na tabela de processos do SO.
 	 * Usado quando um processo deixa de usar a CPU.
+	 * Obs.: Salva sempre a próxima instrução do programa que precisará ser executada.
 	 */
 	public void salvarContexto(BlocoDeControleDeProcesso bcp) {
 		
-		bcp.setBcp(cpu.getPC(), cpu.getX(), cpu.getY());
+		bcp.setBcp(bcp.getProcesso().getProxComando(), cpu.getX(), cpu.getY());
 		cpu.setX(0);
 		cpu.setY(0);
 	}
@@ -43,11 +44,10 @@ public class Despachante {
 	
 	/*
 	 * Continua a execução de um processo, enquanto o quantum dele ainda não acabar.
-	 * Atualizar o bcp somente do que já mudou: lista de comandos e próxima instrução/comando do processo.
+	 * Atualizar o BCP somente do que já mudou: lista de comandos e próxima instrução/comando do processo.
 	 */
 	public void continuarContexto(BlocoDeControleDeProcesso bcp) {
 		
-		bcp.setComandos(bcp.getProcesso().getListaComandos());
-		bcp.setPc(bcp.getProcesso().getProxComando());
+		bcp.setBcp(bcp.getProcesso().getProxComando(), cpu.getX(), cpu.getY());
 	}
 }

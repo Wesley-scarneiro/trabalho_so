@@ -53,16 +53,8 @@ public class SistemaOperacional {
 			}
 				
 			input.close();										// Fecha o arquivo de prioridades.
-			System.out.println("Tabela de processos = " + tabelaDeProcessos);
-			escalonador.imprimirTestes();						// Para teste.
-			System.out.println("\n---> Teste de saída da fila de prontos <---\n");
-			Processo p = escalonador.removerFilaProntos();
-			while (p != null) {
-				
-				System.out.println("Saiu: " + p);
-				escalonador.imprimirProntos();
-				p = escalonador.removerFilaProntos();
-			}
+			System.out.println("CHAMANDO ESCALONADOR");
+			escalonador.testarInicializar(despachante, tabelaDeProcessos);
 			
 			
 		} catch(IOException e) {

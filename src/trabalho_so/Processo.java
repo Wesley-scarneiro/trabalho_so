@@ -26,7 +26,7 @@ public class Processo implements Comparable<Processo>{
 
 	}
 
-	public String getPrograma() {
+	public String getNomePrograma() {
 		return nomePrograma;
 	}
 

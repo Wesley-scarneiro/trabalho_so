@@ -32,12 +32,12 @@ public class Processador {
 	 */
 	public int executar() {
 		
-		if (pc.substring(0,1) == "X") {
+		if (pc.substring(0, 1).compareTo("X") == 0) {
 			
 			this.x = Integer.parseInt(pc.substring(2));
 			return 0;
 		}
-		else if (pc.substring(0,1) == "Y") {
+		else if (pc.substring(0, 1).compareTo("Y") == 0) {
 			
 			this.y = Integer.parseInt(pc.substring(2));
 			return 0; 
