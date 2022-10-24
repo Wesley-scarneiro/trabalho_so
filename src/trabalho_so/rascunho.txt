@@ -1,70 +1,2298 @@
-1. Uma classe para representar um sistema operacional (SistemaOperacional):
-	- Terá uma composição com a classe Escalonador: assim poderá realizar o gerenciamento dos processos;
-	- Terá uma fila de processos prontos: Processos em memória aguardando para usarem a CPU;
-	- Terá uma fila de processos bloqueados: Processos em memória aguardando E/S.
-	- Terá uma variável para indicar o processo que está executando na CPU;
-	- Terá uma variável para representar a tabela/lista de processos, que faz uma composição com a classe BlocoDeControleDeProcesso;
+---> Teste de entrada dos processos <---
 
-2. Uma classe para representar o escalonador do sistema operacional (Escalonador), a mais complexa de implementar:
-	- Terá uma composição com a classe processo: assim poderá retirar ou colocar os processos na CPU;
-	- Contém uma fila de processos prontos, ORDENADOS POR PRIORIDADE;
-	- Contém uma fila de processos bloqueados, ORDENADOS POR ORDEM DE CHEGADA;
-	- Contém uma variável para indicar a quantidade de comandos/instruções que cada processo poderá executar antes de uma preempção;
-	- A classe terá os seguintes métodos:
-		- Distribuição de créditos: Cada processo, na fila de prontos, terá o seu crédito inicial igual a sua prioridade;
-		- Ordenar a fila de prontos: Ordenar a fila de processos prontos por ordem de crédito, do maior para o menor;
-		- Executar processo: 
-			- concede a CPU para um processo; 
-			- a cada comando/instrução o processo perde 1 de crédito; 
-			- quando o crédito do processo acabar será recolocado na fila de prontos (necessário reordenar a fila de prontos); 
-			- Quando TODOS os processos estiverem com ZERO de crédito, os créditos de cada processo serão redistribuídos e a fila 
-			de prontos reeordenada. Depois disso, os processos voltam a executar.
-			- Se um processo for bloqueado durante a sua execução na CPU, por uma chamada de E/S:
-				- Processo é marcado como bloqueado, seu contexto é salvo no BPC e enviado para a fila de bloqueados;
-				- Atribui-se um tempo de espera para o processo aguardar o desbloqueio: para cada ada processo que terminar de executar na CPU, o
-				tempo de espera de todos os bloqueados serão decrementados. Um processo é desbloqueado quando 2 outros processos já terminaram seu quantum. 
-				(O tempo de espera pode ser definido como 2 vezes o número de quantum de um processo).
-				- Quando o tempo de espera de um bloqueado acabar, o processo terá seu contexto restaurado e será enviado para a fila de prontos 
-				(necessários reeordenar a fila de prontos). O processo entra na fila de prontos e executa a próxima instrução guardada no PC (salva no BCP);
+Nome do programa: TESTE-1 | Número de comandos:  | Prioridade: 1 | Créditos: 1
+	[COM, COM, COM, E/S, Y=10, X=2, COM, E/S, SAIDA]
+Nome do programa: TESTE-2 | Número de comandos:  | Prioridade: 3 | Créditos: 3
+	[COM, COM, COM, E/S, Y=10, X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+Nome do programa: TESTE-3 | Número de comandos:  | Prioridade: 2 | Créditos: 2
+	[COM, COM, COM, Y=5, X=2, COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+Nome do programa: TESTE-4 | Número de comandos:  | Prioridade: 10 | Créditos: 10
+	[E/S, COM, E/S, Y=5, E/S, COM, E/S, X=3, X=91, E/S, SAIDA]
+Nome do programa: TESTE-5 | Número de comandos:  | Prioridade: 4 | Créditos: 4
+	[E/S, COM, E/S, Y=5, E/S, COM, E/S, COM, E/S, SAIDA]
+Nome do programa: TESTE-6 | Número de comandos:  | Prioridade: 6 | Créditos: 6
+	[COM, COM, E/S, Y=5, COM, COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+Nome do programa: TESTE-7 | Número de comandos:  | Prioridade: 12 | Créditos: 12
+	[COM, COM, E/S, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+Nome do programa: TESTE-8 | Número de comandos:  | Prioridade: 8 | Créditos: 8
+	[COM, COM, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+Nome do programa: TESTE-9 | Número de comandos:  | Prioridade: 8 | Créditos: 8
+	[COM, E/S, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+Nome do programa: TESTE-10 | Número de comandos:  | Prioridade: 4 | Créditos: 4
+	[COM, COM, COM, E/S, SAIDA]
+CHAMANDO ESCALONADOR
+
+---> Teste de inicialização do escalonador <---
+
+
+TAMANHO DAS FILAS
+	Prontos: 10
+	Bloqueados: 0
+ESTADO DAS FILAS
+	Prontos: [TESTE-7, TESTE-8, TESTE-4, TESTE-9, TESTE-10, TESTE-3, TESTE-6, TESTE-1, TESTE-5, TESTE-2]
+	Bloqueados: []
+
+Contador : 3
+Processo: TESTE-7
+Créditos: 11
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-7 *
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, E/S, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-7 retorna para fila de prontos *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 10
+	Bloqueados: 0
+ESTADO DAS FILAS
+	Prontos: [TESTE-7, TESTE-4, TESTE-6, TESTE-9, TESTE-8, TESTE-3, TESTE-2, TESTE-1, TESTE-5, TESTE-10]
+	Bloqueados: []
+
+Contador : 3
+Processo: TESTE-7
+Créditos: 10
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-7 *
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 2
+* Processo : TESTE-7 bloqueado *
+Espera = 2
+
+TAMANHO DAS FILAS
+	Prontos: 9
+	Bloqueados: 1
+ESTADO DAS FILAS
+	Prontos: [TESTE-4, TESTE-9, TESTE-6, TESTE-10, TESTE-8, TESTE-3, TESTE-2, TESTE-1, TESTE-5]
+	Bloqueados: [TESTE-7]
+
+Contador : 3
+Processo: TESTE-4
+Créditos: 9
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-4 *
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [E/S, COM, E/S, Y=5, E/S, COM, E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, Y=5, E/S, COM, E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-4 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-9, TESTE-8, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-7, TESTE-4]
+
+Contador : 3
+Processo: TESTE-9
+Créditos: 7
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-9 *
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [E/S, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 0
+* Processo : TESTE-9 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-10, TESTE-6, TESTE-1, TESTE-5, TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-7, TESTE-4, TESTE-9]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 7
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=5, COM, X=10, X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-8 retorna para fila de prontos *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-10, TESTE-6, TESTE-1, TESTE-5, TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-7, TESTE-4, TESTE-9]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 6
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, X=10, X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: Y=5
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [X=10, X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: X=10
+X = 8 e Y = 5
+LISTA DE COMANDOS: [X=12, Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: X=10
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-8 retorna para fila de prontos *
+DADOS DO BCP
+Pc: X=12
+X = 10 e Y = 5
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-10, TESTE-8, TESTE-1, TESTE-5, TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-7, TESTE-4, TESTE-9]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 5
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, E/S, Y=5, COM, COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, Y=5, COM, COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, Y=5, COM, COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-6 retorna para fila de prontos *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-10, TESTE-6, TESTE-1, TESTE-5, TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-7, TESTE-4, TESTE-9]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 5
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: X=12
+X = 10 e Y = 5
+LISTA DE COMANDOS: [Y=3, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: X=12
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: Y=3
+X = 12 e Y = 5
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: Y=3
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-8 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-7, TESTE-8, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-9]
+
+Contador : 3
+Processo: TESTE-7
+Créditos: 9
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-7 *
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: Y=5
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [X=10, X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: X=10
+X = 8 e Y = 5
+LISTA DE COMANDOS: [X=12, Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: X=10
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-7 retorna para fila de prontos *
+DADOS DO BCP
+Pc: X=12
+X = 10 e Y = 5
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-7, TESTE-8, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-9]
+
+Contador : 3
+Processo: TESTE-7
+Créditos: 8
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-7 *
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: X=12
+X = 10 e Y = 5
+LISTA DE COMANDOS: [Y=3, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: X=12
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: Y=3
+X = 12 e Y = 5
+LISTA DE COMANDOS: [COM, COM, COM, E/S, SAIDA]
+	Instrução executada: Y=3
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-7 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+
+TAMANHO DAS FILAS
+	Prontos: 9
+	Bloqueados: 1
+ESTADO DAS FILAS
+	Prontos: [TESTE-4, TESTE-7, TESTE-6, TESTE-8, TESTE-5, TESTE-3, TESTE-2, TESTE-1, TESTE-10]
+	Bloqueados: [TESTE-9]
+
+Contador : 3
+Processo: TESTE-4
+Créditos: 8
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-4 *
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, Y=5, E/S, COM, E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=5, E/S, COM, E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-4 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-7, TESTE-8, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-9, TESTE-4]
+
+Contador : 3
+Processo: TESTE-7
+Créditos: 7
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-7 *
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 12 e Y = 3
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 0
+* Processo : TESTE-7 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-9, TESTE-8, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-7]
+
+Contador : 3
+Processo: TESTE-9
+Créditos: 6
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-9 *
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-9 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-9, TESTE-8, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-7]
+
+Contador : 3
+Processo: TESTE-9
+Créditos: 5
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-9 *
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-9 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-9, TESTE-6, TESTE-10, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-7]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 4
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-8 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-9, TESTE-10, TESTE-6, TESTE-8, TESTE-5, TESTE-3, TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-7]
+
+Contador : 3
+Processo: TESTE-9
+Créditos: 4
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-9 *
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-9 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 8
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-10, TESTE-2, TESTE-8, TESTE-5, TESTE-3, TESTE-1, TESTE-9]
+	Bloqueados: [TESTE-4, TESTE-7]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 4
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=5, COM, COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 2
+* Processo : TESTE-6 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-9, TESTE-10, TESTE-2, TESTE-8, TESTE-5, TESTE-3, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-7, TESTE-6]
+
+Contador : 3
+Processo: TESTE-9
+Créditos: 3
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-9 *
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 0 e Y = 0
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-9 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-4, TESTE-8, TESTE-10, TESTE-1, TESTE-5, TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-7, TESTE-6, TESTE-9]
+
+Contador : 3
+Processo: TESTE-4
+Créditos: 7
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-4 *
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, COM, E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: Y=5
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-4 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 6
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-5, TESTE-10, TESTE-1, TESTE-2, TESTE-3]
+	Bloqueados: [TESTE-7, TESTE-6, TESTE-9, TESTE-4]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 3
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-8 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-7, TESTE-2, TESTE-5, TESTE-1, TESTE-3, TESTE-10, TESTE-8]
+	Bloqueados: [TESTE-6, TESTE-9, TESTE-4]
+
+Contador : 3
+Processo: TESTE-7
+Créditos: 6
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-7 *
+* Processo : TESTE-7 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 12 e Y = 3
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-7 finalizado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 6
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-5, TESTE-2, TESTE-10, TESTE-1, TESTE-3, TESTE-8]
+	Bloqueados: [TESTE-6, TESTE-9, TESTE-4]
+
+Contador : 3
+Processo: TESTE-5
+Créditos: 3
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-5 *
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [E/S, COM, E/S, Y=5, E/S, COM, E/S, COM, E/S, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, Y=5, E/S, COM, E/S, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-5 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 5
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-10, TESTE-2, TESTE-8, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-6, TESTE-9, TESTE-4, TESTE-5]
+
+Contador : 3
+Processo: TESTE-10
+Créditos: 3
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-10 *
+* Processo : TESTE-10 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-10 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-10 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-10 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 5
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-10, TESTE-8, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-6, TESTE-9, TESTE-4, TESTE-5]
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, E/S, Y=10, X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, COM, E/S, Y=10, X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, Y=10, X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-2 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-4, TESTE-10, TESTE-6, TESTE-1, TESTE-3, TESTE-8, TESTE-2]
+	Bloqueados: [TESTE-9, TESTE-5]
+
+Contador : 3
+Processo: TESTE-4
+Créditos: 6
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-4 *
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [E/S, X=3, X=91, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [X=3, X=91, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-4 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 6
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-10, TESTE-8, TESTE-1, TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-9, TESTE-5, TESTE-4]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 3
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: Y=5
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-6 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+
+TAMANHO DAS FILAS
+	Prontos: 7
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-10, TESTE-2, TESTE-8, TESTE-1, TESTE-3, TESTE-9, TESTE-6]
+	Bloqueados: [TESTE-5, TESTE-4]
+
+Contador : 3
+Processo: TESTE-10
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-10 *
+* Processo : TESTE-10 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 0 e Y = 0
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-10 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 0 e Y = 0
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-10 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 6
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-2, TESTE-8, TESTE-1, TESTE-3, TESTE-9]
+	Bloqueados: [TESTE-5, TESTE-4, TESTE-10]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [E/S, COM, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-6 retorna para fila de prontos *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+
+TAMANHO DAS FILAS
+	Prontos: 6
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-9, TESTE-2, TESTE-8, TESTE-1, TESTE-3, TESTE-6]
+	Bloqueados: [TESTE-5, TESTE-4, TESTE-10]
+
+Contador : 3
+Processo: TESTE-9
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-9 *
+* Processo : TESTE-9 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 0 e Y = 0
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-9 finalizado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 5
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-2, TESTE-6, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-5, TESTE-4, TESTE-10]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [COM, X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-8 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+
+TAMANHO DAS FILAS
+	Prontos: 6
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-4, TESTE-3, TESTE-6, TESTE-1, TESTE-2, TESTE-8]
+	Bloqueados: [TESTE-5, TESTE-10]
+
+Contador : 3
+Processo: TESTE-4
+Créditos: 5
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-4 *
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: X=3
+X = 8 e Y = 5
+LISTA DE COMANDOS: [X=91, E/S, SAIDA]
+	Instrução executada: X=3
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: X=91
+X = 3 e Y = 5
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: X=91
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 91 e Y = 5
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 0
+* Processo : TESTE-4 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 5
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-8, TESTE-3, TESTE-6, TESTE-1, TESTE-2]
+	Bloqueados: [TESTE-5, TESTE-10, TESTE-4]
+
+Contador : 3
+Processo: TESTE-8
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-8 *
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 12 e Y = 3
+LISTA DE COMANDOS: [X=1, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: X=1
+X = 12 e Y = 3
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: X=1
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-8 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 1 e Y = 3
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 0
+* Processo : TESTE-8 finalizado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 5
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-5, TESTE-2, TESTE-6, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-10, TESTE-4]
+
+Contador : 3
+Processo: TESTE-5
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-5 *
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, Y=5, E/S, COM, E/S, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=5, E/S, COM, E/S, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-5 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 4
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-3, TESTE-2, TESTE-6, TESTE-1]
+	Bloqueados: [TESTE-10, TESTE-4, TESTE-5]
+
+Contador : 3
+Processo: TESTE-3
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-3 *
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, Y=5, X=2, COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, COM, Y=5, X=2, COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, Y=5, X=2, COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-3 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 4
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-1, TESTE-6, TESTE-3]
+	Bloqueados: [TESTE-10, TESTE-4, TESTE-5]
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, Y=10, X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=10, X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-2 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 3
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-10, TESTE-4, TESTE-5, TESTE-2]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 2
+* Processo : TESTE-6 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 3
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-10, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-4, TESTE-5, TESTE-2, TESTE-6]
+
+Contador : 3
+Processo: TESTE-10
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-10 *
+* Processo : TESTE-10 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 0 e Y = 0
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-10 finalizado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-3, TESTE-1]
+	Bloqueados: [TESTE-4, TESTE-5, TESTE-2, TESTE-6]
+
+Contador : 3
+Processo: TESTE-3
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-3 *
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=5, X=2, COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+LISTA DE COMANDOS: [X=2, COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: Y=5
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: X=2
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: X=2
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-3 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 5
+
+TAMANHO DAS FILAS
+	Prontos: 3
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-4, TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-5, TESTE-2, TESTE-6]
+
+Contador : 3
+Processo: TESTE-4
+Créditos: 4
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-4 *
+* Processo : TESTE-4 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 91 e Y = 5
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-4 finalizado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-5, TESTE-2, TESTE-6]
+
+Contador : 3
+Processo: TESTE-1
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-1 *
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: X=8
+X = 0 e Y = 0
+LISTA DE COMANDOS: [COM, COM, COM, E/S, Y=10, X=2, COM, E/S, SAIDA]
+	Instrução executada: X=8
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, COM, E/S, Y=10, X=2, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [COM, E/S, Y=10, X=2, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-1 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+
+TAMANHO DAS FILAS
+	Prontos: 3
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-5, TESTE-3, TESTE-1]
+	Bloqueados: [TESTE-2, TESTE-6]
+
+Contador : 3
+Processo: TESTE-5
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-5 *
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: Y=5
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, COM, E/S, COM, E/S, SAIDA]
+	Instrução executada: Y=5
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, E/S, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-5 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-1, TESTE-3]
+	Bloqueados: [TESTE-2, TESTE-6, TESTE-5]
+
+Contador : 3
+Processo: TESTE-1
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-1 *
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 0
+LISTA DE COMANDOS: [E/S, Y=10, X=2, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 0
+LISTA DE COMANDOS: [Y=10, X=2, COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-1 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-3]
+	Bloqueados: [TESTE-6, TESTE-5, TESTE-1]
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: Y=10
+X = 8 e Y = 0
+LISTA DE COMANDOS: [X=2, COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: Y=10
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: X=2
+X = 8 e Y = 10
+LISTA DE COMANDOS: [COM, COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: X=2
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [COM, E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-2 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-6, TESTE-5, TESTE-1]
+
+Contador : 3
+Processo: TESTE-3
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-3 *
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 5
+LISTA DE COMANDOS: [COM, X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 5
+LISTA DE COMANDOS: [X=3, X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: X=3
+X = 2 e Y = 5
+LISTA DE COMANDOS: [X=91, Y=10, COM, X=4, SAIDA]
+	Instrução executada: X=3
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-3 retorna para fila de prontos *
+DADOS DO BCP
+Pc: X=91
+X = 3 e Y = 5
+
+TAMANHO DAS FILAS
+	Prontos: 3
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-2, TESTE-3]
+	Bloqueados: [TESTE-5, TESTE-1]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 0
+* Processo : TESTE-6 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-3, TESTE-2]
+	Bloqueados: [TESTE-5, TESTE-1, TESTE-6]
+
+Contador : 3
+Processo: TESTE-3
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-3 *
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: X=91
+X = 3 e Y = 5
+LISTA DE COMANDOS: [Y=10, COM, X=4, SAIDA]
+	Instrução executada: X=91
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: Y=10
+X = 91 e Y = 5
+LISTA DE COMANDOS: [COM, X=4, SAIDA]
+	Instrução executada: Y=10
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 91 e Y = 10
+LISTA DE COMANDOS: [X=4, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Fila de bloqueados decrementada *
+* Processo : TESTE-3 retorna para fila de prontos *
+DADOS DO BCP
+Pc: X=4
+X = 91 e Y = 10
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-3]
+	Bloqueados: [TESTE-5, TESTE-1, TESTE-6]
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [E/S, COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 2 e Y = 10
+LISTA DE COMANDOS: [COM, COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-2 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 1
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: [TESTE-3]
+	Bloqueados: [TESTE-5, TESTE-1, TESTE-6, TESTE-2]
+
+Contador : 3
+Processo: TESTE-3
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-3 *
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: X=4
+X = 91 e Y = 10
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: X=4
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-3 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 4 e Y = 10
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 1
+* Processo : TESTE-3 finalizado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 1
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: [TESTE-5]
+	Bloqueados: [TESTE-1, TESTE-6, TESTE-2]
+
+Contador : 3
+Processo: TESTE-5
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-5 *
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [E/S, COM, E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [COM, E/S, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-5 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 0
+	Bloqueados: 4
+ESTADO DAS FILAS
+	Prontos: []
+	Bloqueados: [TESTE-1, TESTE-6, TESTE-2, TESTE-5]
+
+* SO HÁ PROCESSOS BLOQUEADOS, TEMPO DE ESPERA DE TODOS DECREMENTADOS * 
+Contador : 3
+Processo: TESTE-1
+Créditos: 0
+Estado: executando
+
+* TODOS OS PROCESSOS COM ZERO DE CRÉDITOS, CRÉDITOS REDISTRIBUÍDOS *
+* QUANTUM DO PROCESSO: TESTE-1 *
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: Y=10
+X = 8 e Y = 0
+LISTA DE COMANDOS: [X=2, COM, E/S, SAIDA]
+	Instrução executada: Y=10
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: X=2
+X = 8 e Y = 10
+LISTA DE COMANDOS: [COM, E/S, SAIDA]
+	Instrução executada: X=2
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 2
+* Processo : TESTE-1 retorna para fila de prontos *
+DADOS DO BCP
+Pc: E/S
+X = 2 e Y = 10
+
+TAMANHO DAS FILAS
+	Prontos: 4
+	Bloqueados: 0
+ESTADO DAS FILAS
+	Prontos: [TESTE-5, TESTE-6, TESTE-2, TESTE-1]
+	Bloqueados: []
+
+Contador : 3
+Processo: TESTE-5
+Créditos: 3
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-5 *
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 8 e Y = 5
+LISTA DE COMANDOS: [E/S, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 8 e Y = 5
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-5 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 3
+	Bloqueados: 1
+ESTADO DAS FILAS
+	Prontos: [TESTE-6, TESTE-1, TESTE-2]
+	Bloqueados: [TESTE-5]
+
+Contador : 3
+Processo: TESTE-6
+Créditos: 5
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-6 *
+* Processo : TESTE-6 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 8 e Y = 5
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-6 finalizado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 1
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-5]
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [COM, COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [COM, COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [COM, E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-2 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 1
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-1]
+	Bloqueados: [TESTE-5]
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 1
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 2 e Y = 10
+LISTA DE COMANDOS: [E/S, X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 2 e Y = 10
+LISTA DE COMANDOS: [X=3, X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 1
+* Processo : TESTE-2 bloqueado *
+Espera = 2
+* Fila de bloqueados decrementada *
+
+TAMANHO DAS FILAS
+	Prontos: 1
+	Bloqueados: 2
+ESTADO DAS FILAS
+	Prontos: [TESTE-1]
+	Bloqueados: [TESTE-5, TESTE-2]
+
+Contador : 3
+Processo: TESTE-1
+Créditos: 0
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-1 *
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: E/S
+X = 2 e Y = 10
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: E/S
+	Retorno CPU: 1
+	Uso restante de CPU = 2
+* Processo : TESTE-1 bloqueado *
+Espera = 1
+
+TAMANHO DAS FILAS
+	Prontos: 0
+	Bloqueados: 3
+ESTADO DAS FILAS
+	Prontos: []
+	Bloqueados: [TESTE-5, TESTE-2, TESTE-1]
+
+* SO HÁ PROCESSOS BLOQUEADOS, TEMPO DE ESPERA DE TODOS DECREMENTADOS * 
+Contador : 3
+Processo: TESTE-5
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-5 *
+* Processo : TESTE-5 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 8 e Y = 5
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-5 finalizado *
+Espera = 2
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 0
+ESTADO DAS FILAS
+	Prontos: [TESTE-2, TESTE-1]
+	Bloqueados: []
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 0
+Estado: executando
+
+* TODOS OS PROCESSOS COM ZERO DE CRÉDITOS, CRÉDITOS REDISTRIBUÍDOS *
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: X=3
+X = 2 e Y = 10
+LISTA DE COMANDOS: [X=9, Y=1, COM, COM, SAIDA]
+	Instrução executada: X=3
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: X=9
+X = 3 e Y = 10
+LISTA DE COMANDOS: [Y=1, COM, COM, SAIDA]
+	Instrução executada: X=9
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: Y=1
+X = 9 e Y = 10
+LISTA DE COMANDOS: [COM, COM, SAIDA]
+	Instrução executada: Y=1
+	Retorno CPU: 0
+	Uso restante de CPU = 0
+Espera = 1
+* Processo : TESTE-2 retorna para fila de prontos *
+DADOS DO BCP
+Pc: COM
+X = 9 e Y = 1
+
+TAMANHO DAS FILAS
+	Prontos: 2
+	Bloqueados: 0
+ESTADO DAS FILAS
+	Prontos: [TESTE-1, TESTE-2]
+	Bloqueados: []
+
+Contador : 3
+Processo: TESTE-1
+Créditos: 0
+Estado: executando
+
+* TODOS OS PROCESSOS COM ZERO DE CRÉDITOS, CRÉDITOS REDISTRIBUÍDOS *
+* QUANTUM DO PROCESSO: TESTE-1 *
+* Processo : TESTE-1 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 2 e Y = 10
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 2
+* Processo : TESTE-1 finalizado *
+Espera = 2
+
+TAMANHO DAS FILAS
+	Prontos: 1
+	Bloqueados: 0
+ESTADO DAS FILAS
+	Prontos: [TESTE-2]
+	Bloqueados: []
+
+Contador : 3
+Processo: TESTE-2
+Créditos: 2
+Estado: executando
+
+* QUANTUM DO PROCESSO: TESTE-2 *
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 9 e Y = 1
+LISTA DE COMANDOS: [COM, SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 2
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: COM
+X = 9 e Y = 1
+LISTA DE COMANDOS: [SAIDA]
+	Instrução executada: COM
+	Retorno CPU: 0
+	Uso restante de CPU = 1
+* Processo : TESTE-2 continua usando CPU *
+DADOS DO BCP
+Pc: SAIDA
+X = 9 e Y = 1
+LISTA DE COMANDOS: []
+	Instrução executada: SAIDA
+	Retorno CPU: -1
+	Uso restante de CPU = 0
+* Processo : TESTE-2 finalizado *
+Espera = 1
+
+
+
+public void testarInicializar(Despachante d, List<BlocoDeControleDeProcesso> tp) {
+		
+		int contador;						// Controla o quantum de cada processo.
+		int espera = 0;							// Conta quantos quantums ocorreram.
+		int retorno;						// Resultado da execução de uma instrução do programa.
+		Processo p;
+		boolean continuar;					// Controla quando um processo poderá voltar para fila de prontos.
+		boolean bloquear;
+		BlocoDeControleDeProcesso bcp;
+		
+		System.out.println("\n---> Teste de inicialização do escalonador <---\n");
+		while (filaDeProntos.size() != 0 || filaDeBloqueados.size() != 0) {
+			
+			System.out.println("\nTAMANHO DAS FILAS" + "\n\tProntos: " + filaDeProntos.size() + "\n\tBloqueados: " + filaDeBloqueados.size());
+			System.out.println("ESTADO DAS FILAS" + "\n\tProntos: " + filaDeProntos + "\n\tBloqueados: " + filaDeBloqueados + "\n");
+			
+			 /* Quando só há processos na fila de bloqueados. */
+			if (filaDeProntos.size() == 0) {
 				
-	- Se a fila de prontos estiver vazia e existir somente bloqueados, o tempo de espera de todos os processos bloqueados serão decrementados. Assim, uma hora
-	ou outra haverá um processo na fila de prontos para executar.
-	- Quando um processo executar a instrução SAIDA, deixará de executar na CPU, sairá da fila de prontos e da tabela de processos (perdendo também o BPC). 
-		
-	
-3. Uma classe para representar os processos que serão executados no computador (Processos).
-	-  Terá uma composição com a classe Processador: assim poderá operar em um processador e realizar as intruções da CPU;
-	- Uma variável para indicar o estado do processo : pronto, executando ou bloqueado;
-	- Uma variável para indicar a prioridade do processo: quanto maior o número, maior a prioridade;
-	- Uma variável para indicar o número de créditos do processo: inicia com o mesmo valor da prioridade;
-	- Uma variável para indicar a quantidade de comandos do processo: representa a quantidade de quanta do processo;
-	- Uma variável para representar o tempo de espera do processo: o tempo necessário para o processo ser desbloqueado da fila de bloqueados;
-	- 
-	
-4. Uma classe para representar o bloco de controle de um processo (BCP), que contém as informações gerais para que um processo possa ser retomado na CPU.
-	- Terá como campos da classe as seguintes variáveis:
-		- Processo: Contém o endereço de um processo salvo no BPC;
-		- PC: contador de programa de um processo;
-		- Estado: estado do processo (executando, pronto ou bloqueado);
-		- Prioridade: prioridade do processo;
-		- X: valor do registrador X;
-		- Y: valor do registrador Y;
-		
+				System.out.println("* SO HÁ PROCESSOS BLOQUEADOS, TEMPO DE ESPERA DE TODOS DECREMENTADOS * ");
+				while (filaDeBloqueados.size() != 0) {
+					
+					decrementarBloqueados();
+				}
+			}
+			
+			contador = this.quantum;
+			p = removerFilaProntos();
+			p.setEstado("executando");
+			if (p.getCreditos() > 0) p.decrementarCreditos();
+			continuar = true;
+			bloquear = false;
+			bcp = buscarBcp(p, tp);
+			System.out.println("Contador : " + contador + "\nProcesso: " + p.getNomePrograma() + "\nCréditos: " + p.getCreditos() + "\nEstado: " + p.getEstado() + "\n");
+			
+			/* Quando só existe processos com zero créditos e estão somente na fila de prontos, redistribui os créditos. */
+			if (p.getCreditos() == 0 && filaDeBloqueados.size() == 0) {
+				
+				System.out.println("* TODOS OS PROCESSOS COM ZERO DE CRÉDITOS, CRÉDITOS REDISTRIBUÍDOS *");
+				redistribuirCreditos();
+			}
+			
+			/* Executa o quantum de um processo. */
+			System.out.println("* QUANTUM DO PROCESSO: " + p.getNomePrograma() + " *");
+			while (contador != 0) {
+				System.out.println("* Processo : " + p.getNomePrograma() + " continua usando CPU *");
+				bcp.imprimirBcp();
+				System.out.println("LISTA DE COMANDOS: " + p.getListaComandos());
+				
+				retorno = d.executarProcesso(bcp);
+				--contador;
+				
+				System.out.println("\tInstrução executada: " + bcp.getPc() + "\n\tRetorno CPU: " + retorno);
+				System.out.println("\tUso restante de CPU = " + contador);
 
-2. Uma classe para representar um processador (Processador), que contém quatro instruções (métodos da classe):
-	- Terá um contador de programa (PC) e dois registradores (X e Y) como campos da classe.
-	- Quatro métodos que representarão as instruções que o processador pode executar: 
-		- Registrador = <valor>: atribui algum valor para os registradores X e Y;
-		- E/S: realiza uma chamada ao SO para um dispositivo de E/S do sistema;
-		- COM: a tarefa executada pelo computador;
-		- SAIDA: remove o programa em questão da memória.
-
-
-
-4. Uma classe para representar um computador, que conterá o método main.
-	- Inicializa um objeto SistemaOperacional;
-	- Inicializa um objeto Processador;
-	- Inicializa um objeto Processos;
-	- Outras operações para gerar os resultados esperados;
-	
-	
+				if (retorno == 1) {
+					System.out.println("* Processo : " + p.getNomePrograma() + " bloqueado *");
+					p.setEstado("bloqueado");
+					p.setTempoEspera(tempoEspera);
+					d.salvarContexto(bcp);
+					bloquear = true;
+					continuar = false;
+					break;
+				}
+				else if (retorno == -1){
+					
+					System.out.println("* Processo : " + p.getNomePrograma() + " finalizado *");
+					removerBcp(p, tp);
+					continuar = false;
+					break;	
+				}
+				else {
+					d.continuarContexto(bcp);
+					continue;
+				}
+			}
+			
+			++espera;			// Conta quantos quantums já ocorreram.
+			System.out.println("Espera = " + espera);
+			
+			/* Decrementa o tempo de espera de todos os processos bloqueados a cada determinada quantidade de quantums. */
+			if (espera == tempoEspera) {
+				
+				if (filaDeBloqueados.size() != 0 && espera == tempoEspera) {
+					
+					System.out.println("* Fila de bloqueados decrementada *");
+					decrementarBloqueados();
+				}
+				espera = 0;
+			}
+			
+			/* Adiciona o processo bloqueado na fila */
+			if (bloquear == true) adicionarFilaBloqueados(p);
+			
+			/* Se for o caso, adiciona o processo novamente na fila de prontos. Quando o quantum dele acaba. */
+			if (continuar == true) {
+				
+				System.out.println("* Processo : " + p.getNomePrograma() + " retorna para fila de prontos *");
+				p.setEstado("pronto");
+				bcp.setEstado("pronto");				
+				bcp.imprimirBcp();
+				adicionarFilaProntos(p);
+			}
+		}
+	}

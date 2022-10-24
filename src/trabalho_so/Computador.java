@@ -21,7 +21,7 @@ public class Computador {
 	 */
 	public void ligar() {
 		
-		so.testarInicializar();
+		so.inicializar();
 	}
 
 	public static void main(String[] args) {

@@ -23,44 +23,11 @@ public class SistemaOperacional {
 	private String [] arqProcessos = {"01.txt", "02.txt", "03.txt", "04.txt", "05.txt", "06.txt", "07.txt", "08.txt", "09.txt", "10.txt"};
 	private String arqPrioridades = "prioridades.txt";
 	private String arqQuantum = "quantum.txt";
+	private String logFile;
 	
 	public SistemaOperacional(Processador cpu) {
 		
 		this.despachante = new Despachante(cpu);
-	}
-	
-	/*
-	 * Testa o método inicializar. 
-	 * EXCLUIR AO FINALIZAR O TRABALHO.
-	 */
-	public void testarInicializar() {
-		
-		try {
-			
-			escalonador = new Escalonador(carregarQuantum(arqQuantum));
-			Scanner input = new Scanner(Paths.get(arqPrioridades));
-			
-			System.out.println("---> Teste de entrada dos processos <---\n");
-			
-			for (int i = 0; i < arqProcessos.length; i++) {
-				
-				Processo p = new Processo();
-				carregarProcesso(p, arqProcessos[i], input.nextInt());
-				criarBcp(p);
-				escalonador.adicionarFilaProntos(p);
-				
-				p.imprimirTestes();								// Para teste.
-			}
-				
-			input.close();										// Fecha o arquivo de prioridades.
-			System.out.println("CHAMANDO ESCALONADOR");
-			escalonador.testarInicializar(despachante, tabelaDeProcessos);
-			
-			
-		} catch(IOException e) {
-			
-			System.out.println("Erro ao abrir o arquivo.");
-		}
 	}
 	
 	/*
@@ -92,10 +59,10 @@ public class SistemaOperacional {
 				
 			input.close();										// Fecha o arquivo de prioridades.
 			
-			
 			/* Etapa em que o escalonador gerencia a execução dos processos */
+			System.out.println("Carregando processos: ");
+			escalonador.imprimirFila();
 			escalonador.inicializar(despachante, tabelaDeProcessos);
-			
 			
 		} catch(IOException e) {
 			
